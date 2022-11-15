@@ -31,7 +31,9 @@ const Header = () => {
           <img src={Search} alt='' className='w-[16px] h-[14.52px] cursor-pointer' />
         </div>
         <Button>
-          <Link to={'/login'}>Sign Up</Link>
+          <Link to={'/login'} className='flex w-full h-full items-center justify-center'>
+            Sign Up
+          </Link>
         </Button>
       </div>
     </div>
