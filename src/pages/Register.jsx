@@ -7,6 +7,7 @@ import * as yup from 'yup'
 import Button from '../components/Button'
 
 const SignupSchema = yup.object().shape({
+  fullName: yup.string().required('Chưa nhập tên của bạn!'),
   email: yup.string().email('Không đúng định dạng email!').required('Email là bắt buộc!'),
   password: yup
     .string()
@@ -16,7 +17,7 @@ const SignupSchema = yup.object().shape({
       'Mật khẩu ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và 1 số!'
     )
 })
-const Login = () => {
+const Register = () => {
   const {
     register,
     handleSubmit,
@@ -34,6 +35,17 @@ const Login = () => {
         <h2 className='font-semibold text-[40px] text-[#2EBAC1]'>Monkey Blogging</h2>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
+        <div className='flex flex-col mb-8'>
+          <label className='font-semibold text-[20px] mb-6'>Full name</label>
+          <div className='border rounded-lg p-6 mb-3'>
+            <input
+              {...register('fullName')}
+              placeholder='Please enter your fullname'
+              className='placeholder:text-[20px] w-full bg-white text-[20px]'
+            />
+          </div>
+          {errors.fullName && <p className='text-[#fa3b3b]'>{errors.fullName.message}</p>}
+        </div>
         <div className='flex flex-col mb-8'>
           <label className='font-semibold text-[20px] mb-6'>Email address</label>
           <div className='border rounded-lg p-6 mb-3'>
@@ -58,7 +70,7 @@ const Login = () => {
         </div>
         <div className='w-full flex justify-center'>
           <Button linearGradient={true} login={true}>
-            Login
+            Sign Up
           </Button>
         </div>
       </form>
@@ -66,4 +78,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Register
