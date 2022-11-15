@@ -2,7 +2,6 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Blog from './pages/Blog'
-import Resume from './pages/Contact'
 import Login from './pages/Login'
 import Contact from './pages/Contact'
 function App() {

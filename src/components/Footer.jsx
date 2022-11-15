@@ -1,5 +1,4 @@
 import React from 'react'
-import './css.css'
 const Footer = () => {
   return (
     <div className='bg-[#b3e5ff] p-6 bg-opacity-50 flex justify-center gap-20'>
