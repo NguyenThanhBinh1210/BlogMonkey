@@ -4,7 +4,7 @@ import Header from '../components/Header'
 
 const BaseLayout = ({ children }) => {
   return (
-    <div className='max-w-[1181px] m-auto bg-[#ccd8e5]'>
+    <div className='max-w-[1181px] m-auto '>
       <Header />
       {children}
       <Footer />

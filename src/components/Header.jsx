@@ -26,7 +26,7 @@ const Header = () => {
         </ul>
       </div>
       <div className='flex'>
-        <div className=' rounded-lg overflow-hidden flex justify-between pl-4 pr-4 bg-white items-center mr-4 w-[320px] h-[60px]'>
+        <div className=' rounded-lg overflow-hidden flex justify-between pl-4 pr-4 bg-white items-center mr-4 w-[320px] h-[60px] border'>
           <input type='text' placeholder='Search posts..' className='outline-none placeholder:text-md' />
           <img src={Search} alt='' className='w-[16px] h-[14.52px] cursor-pointer' />
         </div>
