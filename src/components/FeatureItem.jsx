@@ -18,6 +18,7 @@ const FeatureItem = ({ img }) => {
           <span>Binh dep trai</span>
         </div>
       </div>
+      asddddddddddddddddddddddddddddddddddddddddddddd
     </div>
   )
 }
