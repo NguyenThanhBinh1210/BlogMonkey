@@ -5,17 +5,23 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import Button from '../components/Button'
 import FileBase from 'react-file-base64'
+import { useDispatch } from 'react-redux'
+import { createBlog } from '../redux/feature/blogSlice'
+import { useNavigate } from 'react-router-dom'
 
 const SignupSchema = yup.object().shape({
-  content: yup.string().required('Chưa nhập nội dung!'),
   title: yup.string().required('Tiêu đề là bắt buộc!'),
-  slug: yup.string().required('Danh mục là bắt buộc!'),
+  description: yup.string().required('Chưa nhập nội dung!'),
+  tags: yup.string().required('Danh mục là bắt buộc!'),
   main: yup.string().required('Chưa nhập nội dung!')
 })
 
 const Create = () => {
   const [dataForm, setDataForm] = useState()
   const [selectImages, setSelectImages] = useState()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   console.log(dataForm)
   const {
     register,
@@ -26,10 +32,12 @@ const Create = () => {
   })
   const onSubmit = (data) => {
     if (selectImages) {
-      const newData = { ...data, picture: [...selectImages] }
-      setDataForm(newData)
+      const newData = { ...data, imageFile: [...selectImages] }
+      // setDataForm(newData)
+      console.log(newData)
+      dispatch(createBlog({ newData, navigate }))
     } else {
-      setDataForm(data)
+      // dispatch(createBlog({ data, navigate }))
     }
   }
   return (
@@ -56,12 +64,12 @@ const Create = () => {
                   name='w3review'
                   // rows='4'
                   cols='50'
-                  {...register('content')}
+                  {...register('description')}
                   placeholder='Short description'
                   className='placeholder:text-[16px] w-full bg-white text-[16px] h-full resize-none'
                 />
               </div>
-              {errors.content && <p className='text-[#fa3b3b]'>{errors.content.message}</p>}
+              {errors.description && <p className='text-[#fa3b3b]'>{errors.description.message}</p>}
             </div>
           </div>
           <div className='right w-[400px]'>
@@ -69,12 +77,12 @@ const Create = () => {
               <label className='font-semibold text-[20px] mb-[15px] text-[#84878B]'>Slug</label>
               <div className='border rounded-lg pl-3 mb-3 h-[48px] flex items-center'>
                 <input
-                  {...register('slug')}
+                  {...register('tags')}
                   placeholder='Slug '
                   className='placeholder:text-[16px] w-full bg-white text-[16px]'
                 />
               </div>
-              {errors.slug && <p className='text-[#fa3b3b]'>{errors.slug.message}</p>}
+              {errors.tags && <p className='text-[#fa3b3b]'>{errors.tags.message}</p>}
             </div>
 
             <div>

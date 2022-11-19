@@ -7,15 +7,29 @@ import Pic1 from '../assets/images/pic1.png'
 import Pic2 from '../assets/images/pic2.png'
 import Pic3 from '../assets/images/pic3.png'
 import Pic4 from '../assets/images/pic4.png'
-import Pic5 from '../assets/images/pic5.png'
-import Pic6 from '../assets/images/pic6.png'
-import Pic7 from '../assets/images/pic7.png'
-import Pic8 from '../assets/images/pic8.png'
 import DotGray from '../assets/icons/Ellipse11.png'
 import FeatureItem from '../components/FeatureItem'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import useGetBlog from '../hooks/useGetBlog'
+
+import { toast } from 'react-toastify'
 
 const Home = () => {
+  const { blogs } = useGetBlog()
+  const checkLogin = JSON.parse(localStorage.getItem('profile'))?.result?.name
+
+  const navigate = useNavigate()
+
+  const handleCreate = () => {
+    if (checkLogin) {
+      navigate(`/create`)
+    } else {
+      toast.warn('Phải đăng nhập trước!', {
+        position: toast.POSITION.TOP_RIGHT
+      })
+    }
+  }
+
   return (
     <BaseLayout>
       <section
@@ -28,9 +42,10 @@ const Home = () => {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
             dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.
           </p>
-          <Button banner={true}>
-            <Link to='/create'>Get Started</Link>
-          </Button>
+
+          <div onClick={handleCreate}>
+            <Button banner={true}>Get Started </Button>
+          </div>
         </div>
         <div>
           <img src={Illustration} alt='' className='w-[508.12px] h-[414.71px]' />
@@ -124,10 +139,12 @@ const Home = () => {
         </div>
       </section>
       <section className='flex justify-between mt-[57px]'>
-        <FeatureItem img={Pic5}></FeatureItem>
-        <FeatureItem img={Pic6}></FeatureItem>
-        <FeatureItem img={Pic7}></FeatureItem>
-        <FeatureItem img={Pic8}></FeatureItem>
+        {blogs &&
+          blogs.slice(0, 4).map((item) => (
+            <div className='w-[267px] mb-2' key={item?._id}>
+              <FeatureItem item={item}></FeatureItem>
+            </div>
+          ))}
       </section>
     </BaseLayout>
   )
