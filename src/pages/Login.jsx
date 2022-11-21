@@ -46,9 +46,13 @@ const Login = () => {
         </Link>
         <h2 className='font-semibold text-[40px] text-[#2EBAC1]'>Monkey Blogging</h2>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' className='pb-10'>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete='off'
+        className='pb-10 mobile:w-[95%] mobile:mt-[15px] mobile:mx-auto'
+      >
         <div className='flex flex-col mb-8'>
-          <label className='font-semibold text-[20px] mb-6'>Email address</label>
+          <label className='font-semibold text-[20px] mb-6 mobile:mb-2'>Email address</label>
           <div className='border rounded-lg p-6 mb-3'>
             <input
               {...register('email')}
@@ -59,7 +63,7 @@ const Login = () => {
           {errors.email && <p className='text-[#fa3b3b]'>{errors.email.message}</p>}
         </div>
         <div className='flex flex-col mb-10'>
-          <label className='font-semibold text-[20px] mb-6'>Password</label>
+          <label className='font-semibold text-[20px] mb-6 mobile:mb-2'>Password</label>
           <div className='border rounded-lg p-6 mb-3 flex items-center'>
             <input
               type={hide ? 'password' : 'text'}

@@ -5,6 +5,9 @@ module.exports = {
     extend: {},
     fontFamily: {
       montserrat: 'Montserrat, sans-serif'
+    },
+    screens: {
+      mobile: { min: '350px', max: '450px' }
     }
   },
   plugins: []

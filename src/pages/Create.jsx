@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Gallery from '../assets/icons/gallery.png'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import Button from '../components/Button'
 import FileBase from 'react-file-base64'
-import { useDispatch } from 'react-redux'
-import { createBlog } from '../redux/feature/blogSlice'
-import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { createBlog, editBlog, getBlog } from '../redux/feature/blogSlice'
+import { useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const SignupSchema = yup.object().shape({
   title: yup.string().required('Tiêu đề là bắt buộc!'),
@@ -17,12 +18,12 @@ const SignupSchema = yup.object().shape({
 })
 
 const Create = () => {
-  const [dataForm, setDataForm] = useState()
+  const { id } = useParams()
+  const { blog } = useSelector((state) => ({ ...state.blog }))
   const [selectImages, setSelectImages] = useState()
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  console.log(dataForm)
   const {
     register,
     handleSubmit,
@@ -32,23 +33,39 @@ const Create = () => {
   })
   const onSubmit = (data) => {
     if (selectImages) {
-      const newData = { ...data, imageFile: [...selectImages] }
-      // setDataForm(newData)
-      console.log(newData)
-      dispatch(createBlog({ newData, navigate }))
-    } else {
-      // dispatch(createBlog({ data, navigate }))
+      const newData = {
+        userId: JSON.parse(localStorage.getItem('profile'))?.user?._id,
+        ...data,
+        imageFile: [...selectImages]
+      }
+      const updatedBlogData = { ...newData }
+      if (!id) {
+        dispatch(createBlog({ newData, navigate, toast }))
+      }
+      if (id) {
+        dispatch(editBlog({ updatedBlogData, id, navigate, toast }))
+      }
     }
   }
+  useEffect(() => {
+    if (id) {
+      dispatch(getBlog(id))
+    }
+  }, [id, dispatch])
+
   return (
-    <div className='max-w-[1000px] mx-auto pt-10'>
+    <div className='max-w-[1000px] mx-auto pt-10 mobile:w-[90%] pb-10'>
+      <div className='mb-10' onClick={() => navigate(-1)}>
+        <Button>Back</Button>
+      </div>
       <form onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
-        <div className='flex justify-between'>
-          <div className='left w-[400px]'>
+        <div className='flex justify-between mobile:flex-col'>
+          <div className='left w-[400px] mobile:w-full'>
             <div className='flex flex-col mb-8'>
               <label className='font-semibold text-[20px] mb-[15px] text-[#84878B]'>Title</label>
               <div className='border rounded-lg pl-3 mb-3 h-[48px] flex items-center'>
                 <input
+                  defaultValue={id ? blog.title : ''}
                   {...register('title')}
                   placeholder='Title '
                   className='placeholder:text-[16px] w-full bg-white text-[16px]'
@@ -62,8 +79,8 @@ const Create = () => {
                 <textarea
                   id='w3review'
                   name='w3review'
-                  // rows='4'
                   cols='50'
+                  defaultValue={id ? blog.description : ''}
                   {...register('description')}
                   placeholder='Short description'
                   className='placeholder:text-[16px] w-full bg-white text-[16px] h-full resize-none'
@@ -72,11 +89,12 @@ const Create = () => {
               {errors.description && <p className='text-[#fa3b3b]'>{errors.description.message}</p>}
             </div>
           </div>
-          <div className='right w-[400px]'>
+          <div className='right w-[400px] mobile:w-full'>
             <div className='flex flex-col mb-8'>
               <label className='font-semibold text-[20px] mb-[15px] text-[#84878B]'>Slug</label>
               <div className='border rounded-lg pl-3 mb-3 h-[48px] flex items-center'>
                 <input
+                  defaultValue={id ? blog.tags : ''}
                   {...register('tags')}
                   placeholder='Slug '
                   className='placeholder:text-[16px] w-full bg-white text-[16px]'
@@ -87,8 +105,8 @@ const Create = () => {
 
             <div>
               <label className='font-semibold text-[20px]  text-[#84878B]'>Images</label>
-              <section className='mt-[15px]'>
-                <label className='m-0 flex flex-col base-file justify-center items-center border rounded-lg w-[400px] h-[200px] text-lg '>
+              <section className='mt-[15px] relative'>
+                <label className=' m-0 flex cursor-pointer flex-col base-file justify-center items-center border rounded-lg w-[400px] mobile:w-full mobile:mb-[15px] h-[200px] text-lg '>
                   <img src={Gallery} alt='' className='w-[60.41px] h-[62.43px]' />
                   <FileBase
                     type='file'
@@ -102,6 +120,7 @@ const Create = () => {
                     multiple={true}
                     accept='image/png, image/jpg, image/webp'
                   />
+                  <div className='absolute bottom-4'>Đã thêm {selectImages ? selectImages?.length : '0'} ảnh</div>
                 </label>
               </section>
             </div>
@@ -113,7 +132,7 @@ const Create = () => {
             <textarea
               id='w3review'
               name='w3review'
-              // rows='4'
+              defaultValue={id ? blog.main : ''}
               cols='50'
               {...register('main')}
               placeholder='Enter your content...'
@@ -122,9 +141,9 @@ const Create = () => {
           </div>
           {errors.main && <p className='text-[#fa3b3b]'>{errors.main.message}</p>}
         </div>
-        <div className='w-full flex justify-center'>
+        <div className='w-full flex justify-center' type='submit'>
           <Button linearGradient={true} login={true}>
-            Add new post
+            {id ? 'Edit confirm' : 'Add new post'}
           </Button>
         </div>
       </form>

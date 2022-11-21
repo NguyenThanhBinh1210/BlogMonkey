@@ -1,21 +1,28 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import * as api from '../api'
 
-export const createBlog = createAsyncThunk('blog/createBlog', async ({ newData, navigate }, { rejectWithValue }) => {
-  try {
-    const response = await api.createBlog(newData)
-    navigate('/')
-    return response.data
-  } catch (err) {
-    return rejectWithValue(err.response.data)
+export const createBlog = createAsyncThunk(
+  'blog/createBlog',
+  async ({ newData, navigate, toast }, { rejectWithValue }) => {
+    try {
+      const response = await api.createBlog(newData)
+      navigate(`/user/${newData.userId}`)
+      toast.success('Đăng bài thành công!')
+      return response.data
+    } catch (err) {
+      return rejectWithValue(err.response.data)
+    }
   }
-})
+)
 export const editBlog = createAsyncThunk(
   'blog/editBlog',
-  async ({ updatedBlogData, id, navigate }, { rejectWithValue }) => {
+  async ({ updatedBlogData, id, navigate, toast }, { rejectWithValue }) => {
     try {
       const response = await api.editBlog(updatedBlogData, id)
-      navigate(`/blog/${id}`)
+      // navigate(`/blog/${id}`)
+      navigate(`/user/${updatedBlogData.userId}`)
+
+      toast.success('Chỉnh sửa thành công!')
       return response.data
     } catch (err) {
       return rejectWithValue(err.response.data)
@@ -46,6 +53,14 @@ export const getBlogByTag = createAsyncThunk('blog/getBlogByTag', async (tag, { 
     return rejectWithValue(err.response.data)
   }
 })
+export const getBlogByUserId = createAsyncThunk('blog/getBlogByUserId', async (id, { rejectWithValue }) => {
+  try {
+    const response = await api.getBlogByUserId(id)
+    return response.data
+  } catch (err) {
+    return rejectWithValue(err.response.data)
+  }
+})
 export const searchBlog = createAsyncThunk('blog/searchBlog', async (searchQuery, { rejectWithValue }) => {
   try {
     const response = await api.getBlogBySearch(searchQuery)
@@ -55,10 +70,11 @@ export const searchBlog = createAsyncThunk('blog/searchBlog', async (searchQuery
   }
 })
 
-export const deleteBlog = createAsyncThunk('blog/deleteBlog', async ({ id, navigate }, { rejectWithValue }) => {
+export const deleteBlog = createAsyncThunk('blog/deleteBlog', async ({ id, toast }, { rejectWithValue }) => {
   try {
     const response = await api.deleteBlog(id)
-    navigate('/')
+    // navigate('/')
+    toast.info('Xoá thành công!')
     return response.data
   } catch (err) {
     return rejectWithValue(err.response.data)
@@ -115,6 +131,17 @@ const blogSlice = createSlice({
       state.tagBlog = action.payload
     },
     [getBlogByTag.rejected]: (state, action) => {
+      state.loading = false
+      state.error = action.payload.message
+    },
+    [getBlogByUserId.pending]: (state, action) => {
+      state.loading = true
+    },
+    [getBlogByUserId.fulfilled]: (state, action) => {
+      state.loading = false
+      state.blogs = action.payload
+    },
+    [getBlogByUserId.rejected]: (state, action) => {
       state.loading = false
       state.error = action.payload.message
     },

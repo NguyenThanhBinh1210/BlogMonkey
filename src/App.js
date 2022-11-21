@@ -6,10 +6,10 @@ import Login from './pages/Login'
 import Contact from './pages/Contact'
 import Register from './pages/Register'
 import { ToastContainer } from 'react-toastify'
-
 import Details from './pages/Details'
-
 import Create from './pages/Create'
+// import Dashboard from './pages/Dashboard'
+import Profile from './pages/Profile'
 
 function App() {
   return (
@@ -21,7 +21,9 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/blog/:id' element={<Details />} />
+        <Route path='/user/:id' element={<Profile />} />
         <Route path='/create' element={<Create />} />
+        <Route path='/create/:id' element={<Create />} />
       </Routes>
       <ToastContainer></ToastContainer>
     </BrowserRouter>
