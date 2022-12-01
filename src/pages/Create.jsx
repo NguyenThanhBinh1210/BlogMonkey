@@ -10,32 +10,51 @@ import { createBlog, editBlog, getBlog } from '../redux/feature/blogSlice'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-const SignupSchema = yup.object().shape({
-  title: yup.string().required('Tiêu đề là bắt buộc!'),
-  description: yup.string().required('Chưa nhập nội dung!'),
-  tags: yup.string().required('Danh mục là bắt buộc!'),
-  main: yup.string().required('Chưa nhập nội dung!')
-})
-
+const initialState = {
+  title: '',
+  description: '',
+  tags: '',
+  main: ''
+}
 const Create = () => {
   const { id } = useParams()
   const { blog } = useSelector((state) => ({ ...state.blog }))
-  const [selectImages, setSelectImages] = useState()
+  const [formData, setFormData] = useState(initialState)
+  const [selectImages, setSelectImages] = useState([])
+  const [errorFile, setErrorFile] = useState(false)
+  const [error, setError] = useState(false)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({
-    resolver: yupResolver(SignupSchema)
-  })
+  useEffect(() => {
+    if (id) {
+      setSelectImages(blog.imageFile)
+      setFormData(blog)
+    }
+    if (!id) {
+      setFormData(initialState)
+    }
+  }, [id, blog])
+
+  useEffect(() => {
+    if (selectImages?.length > 0) setErrorFile(false)
+  }, [selectImages])
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
+  const { register, handleSubmit } = useForm({})
+
   const onSubmit = (data) => {
-    if (selectImages) {
+    const { title, description, tags, main } = formData
+    if (selectImages.length === 0) setErrorFile(true)
+    if (title === '' || description === '' || tags === '' || main === '') setError(true)
+    if (selectImages.length >= 1 && title !== '' && description !== '' && tags !== '' && main !== '') {
+      setErrorFile(false)
+      setError(false)
       const newData = {
         userId: JSON.parse(localStorage.getItem('profile'))?.user?._id,
-        ...data,
+        ...formData,
         imageFile: [...selectImages]
       }
       const updatedBlogData = { ...newData }
@@ -65,28 +84,31 @@ const Create = () => {
               <label className='font-semibold text-[20px] mb-[15px] text-[#84878B]'>Title</label>
               <div className='border rounded-lg pl-3 mb-3 h-[48px] flex items-center'>
                 <input
-                  defaultValue={id ? blog.title : ''}
+                  name='title'
+                  value={formData.title || ''}
                   {...register('title')}
-                  placeholder='Title '
+                  placeholder='Title'
+                  onChange={handleInputChange}
                   className='placeholder:text-[16px] w-full bg-white text-[16px]'
                 />
               </div>
-              {errors.title && <p className='text-[#fa3b3b]'>{errors.title.message}</p>}
+              {!formData.title && error && <p className='text-[#fa3b3b]'>Chưa nhâp tiêu đề!</p>}
             </div>
             <div className='flex flex-col mb-8'>
               <label className='font-semibold text-[20px] mb-[15px] text-[#84878B]'>Short description</label>
               <div className='border rounded-lg p-3 mb-3 h-[200px] flex items-center overflow-hidden'>
                 <textarea
-                  id='w3review'
-                  name='w3review'
+                  // id='description'
+                  name='description'
                   cols='50'
-                  defaultValue={id ? blog.description : ''}
+                  value={formData.description || ''}
                   {...register('description')}
+                  onChange={handleInputChange}
                   placeholder='Short description'
                   className='placeholder:text-[16px] w-full bg-white text-[16px] h-full resize-none'
                 />
               </div>
-              {errors.description && <p className='text-[#fa3b3b]'>{errors.description.message}</p>}
+              {!formData.description && error && <p className='text-[#fa3b3b]'>Chưa nhâp mô tả!</p>}
             </div>
           </div>
           <div className='right w-[400px] mobile:w-full'>
@@ -94,18 +116,20 @@ const Create = () => {
               <label className='font-semibold text-[20px] mb-[15px] text-[#84878B]'>Slug</label>
               <div className='border rounded-lg pl-3 mb-3 h-[48px] flex items-center'>
                 <input
-                  defaultValue={id ? blog.tags : ''}
+                  name='tags'
+                  value={formData.tags || ''}
                   {...register('tags')}
-                  placeholder='Slug '
+                  onChange={handleInputChange}
+                  placeholder='Slug'
                   className='placeholder:text-[16px] w-full bg-white text-[16px]'
                 />
               </div>
-              {errors.tags && <p className='text-[#fa3b3b]'>{errors.tags.message}</p>}
+              {!formData.tags && error && <p className='text-[#fa3b3b]'>Chưa nhập danh mục!</p>}
             </div>
 
             <div>
               <label className='font-semibold text-[20px]  text-[#84878B]'>Images</label>
-              <section className='mt-[15px] relative'>
+              <section className='mt-[15px] relative mb-3'>
                 <label className=' m-0 flex cursor-pointer flex-col base-file justify-center items-center border rounded-lg w-[400px] mobile:w-full mobile:mb-[15px] h-[200px] text-lg '>
                   <img src={Gallery} alt='' className='w-[60.41px] h-[62.43px]' />
                   <FileBase
@@ -123,6 +147,7 @@ const Create = () => {
                   <div className='absolute bottom-4'>Đã thêm {selectImages ? selectImages?.length : '0'} ảnh</div>
                 </label>
               </section>
+              {errorFile && <p className='text-[#fa3b3b]'>Chưa thêm ảnh!</p>}
             </div>
           </div>
         </div>
@@ -130,20 +155,21 @@ const Create = () => {
           <label className='font-semibold text-[20px] mb-[15px] text-[#84878B]'>Content</label>
           <div className='border rounded-lg p-3 mb-3 h-[200px] flex items-center overflow-hidden'>
             <textarea
-              id='w3review'
-              name='w3review'
-              defaultValue={id ? blog.main : ''}
+              id='main'
+              name='main'
+              value={formData.main || ''}
               cols='50'
               {...register('main')}
               placeholder='Enter your content...'
+              onChange={handleInputChange}
               className='placeholder:text-[16px] w-full bg-white text-[16px] h-full resize-none'
             />
           </div>
-          {errors.main && <p className='text-[#fa3b3b]'>{errors.main.message}</p>}
+          {!formData.main && error && <p className='text-[#fa3b3b]'>Chưa nhập nội dung!</p>}
         </div>
-        <div className='w-full flex justify-center' type='submit'>
+        <div className='w-full flex flex-col justify-center items-center' type='submit'>
           <Button linearGradient={true} login={true}>
-            {id ? 'Edit confirm' : 'Add new post'}
+            {id ? 'Confirm edit' : 'Add new post'}
           </Button>
         </div>
       </form>

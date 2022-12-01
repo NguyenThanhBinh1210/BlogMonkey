@@ -19,7 +19,7 @@ function Details() {
   const { blog, loading } = useSelector((state) => ({ ...state.blog }))
   const { id } = useParams()
   const { blogs } = useGetBlog()
-
+  const relatedBlog = blogs?.filter((item) => item._id !== id && item.tags === blog.tags)
   useEffect(() => {
     scrollToTop()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,7 +129,7 @@ function Details() {
                   </div>
                 </div>
               </div>
-              <div className='my-8'>
+              <div className='my-8 mobile:mx-auto mobile:px-6'>
                 <div style={{ backgroundColor: '#00D1ED', width: '35px', height: '3px', marginBottom: '10px' }}></div>
                 <div>
                   <h1 style={{ color: '#23BB86', fontSize: '28px', lineHeight: '36px', fontWeight: '600' }}>
@@ -137,9 +137,13 @@ function Details() {
                   </h1>
                 </div>
               </div>
-              <section className='flex justify-between mt-[57px] mobile:grid mobile:grid-cols-2'>
-                {blogs &&
-                  blogs.slice(0, 4).map((item) => (
+              <section
+                className={`flex ${
+                  relatedBlog.length < 4 ? 'justify-start gap-x-10' : 'justify-between'
+                }  mt-[57px] mobile:grid mobile:grid-cols-2`}
+              >
+                {relatedBlog &&
+                  relatedBlog.slice(0, 4).map((item) => (
                     <div className='w-[267px] mb-2 mobile:w-full mobile:flex justify-center' key={item?._id}>
                       <FeatureItem item={item}></FeatureItem>
                     </div>

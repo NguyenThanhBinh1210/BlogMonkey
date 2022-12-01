@@ -10,6 +10,7 @@ import Details from './pages/Details'
 import Create from './pages/Create'
 // import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
+import NotFound from './pages/NotFound'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path='/user/:id' element={<Profile />} />
         <Route path='/create' element={<Create />} />
         <Route path='/create/:id' element={<Create />} />
+        <Route path='*' element={<NotFound />} />
       </Routes>
       <ToastContainer></ToastContainer>
     </BrowserRouter>

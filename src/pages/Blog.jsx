@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import FeatureItem from '../components/FeatureItem'
 import BaseLayout from '../layouts/BaseLayout'
 
@@ -10,7 +10,11 @@ import useOnTop from '../hooks/useOnTop'
 
 const Blog = () => {
   const { blogs, loading } = useSelector((state) => state.blog)
+  const [searchInput, setSearchInput] = useState()
   const { search } = useLocation()
+  useEffect(() => {
+    setSearchInput(search)
+  }, [search])
   const { visible, scrollToTop } = useOnTop()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -18,11 +22,11 @@ const Blog = () => {
     navigate('/blog')
   }
   useEffect(() => {
-    if (search) {
-      const searchQuery = search.replace('?searchQuery=', '')
+    if (searchInput) {
+      const searchQuery = searchInput.replace('?searchQuery=', '')
       dispatch(searchBlog(searchQuery))
     }
-  }, [search, dispatch])
+  }, [searchInput, dispatch])
 
   return (
     <BaseLayout>
@@ -38,12 +42,12 @@ const Blog = () => {
           <div className='mt-10 gap-6 mobile:gap-0 grid grid-cols-4 mobile:grid-cols-2'>
             {blogs.length > 0 ? (
               blogs.map((item) => (
-                <div className='w-[267px] mb-2 mobile:w-full justify-center mobile:flex' key={item?._id}>
+                <div className='w-[267px] shadow-bold mb-2 mobile:w-full justify-center mobile:flex' key={item?._id}>
                   <FeatureItem item={item}></FeatureItem>
                 </div>
               ))
             ) : (
-              <div className='mx-auto'>No results were found! !</div>
+              <div className='mx-auto text-[20px]'>No results were found!</div>
             )}
           </div>
           {search && (

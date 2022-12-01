@@ -19,7 +19,6 @@ export const editBlog = createAsyncThunk(
   async ({ updatedBlogData, id, navigate, toast }, { rejectWithValue }) => {
     try {
       const response = await api.editBlog(updatedBlogData, id)
-      // navigate(`/blog/${id}`)
       navigate(`/user/${updatedBlogData.userId}`)
 
       toast.success('Chỉnh sửa thành công!')
@@ -32,6 +31,14 @@ export const editBlog = createAsyncThunk(
 export const getBlogs = createAsyncThunk('blog/getBlogs', async (_, { rejectWithValue }) => {
   try {
     const response = await api.getBlogs()
+    return response.data
+  } catch (err) {
+    return rejectWithValue(err.response.data)
+  }
+})
+export const getBlogByUserId = createAsyncThunk('blog/getBlogByUserId', async (id, { rejectWithValue }) => {
+  try {
+    const response = await api.getBlogByUserId(id)
     return response.data
   } catch (err) {
     return rejectWithValue(err.response.data)
@@ -53,14 +60,7 @@ export const getBlogByTag = createAsyncThunk('blog/getBlogByTag', async (tag, { 
     return rejectWithValue(err.response.data)
   }
 })
-export const getBlogByUserId = createAsyncThunk('blog/getBlogByUserId', async (id, { rejectWithValue }) => {
-  try {
-    const response = await api.getBlogByUserId(id)
-    return response.data
-  } catch (err) {
-    return rejectWithValue(err.response.data)
-  }
-})
+
 export const searchBlog = createAsyncThunk('blog/searchBlog', async (searchQuery, { rejectWithValue }) => {
   try {
     const response = await api.getBlogBySearch(searchQuery)
@@ -87,7 +87,7 @@ const blogSlice = createSlice({
     blogs: [],
     error: '',
     loading: false,
-    tagBlog: []
+    userBlog: []
   },
   extraReducers: {
     [createBlog.pending]: (state, action) => {
@@ -95,7 +95,6 @@ const blogSlice = createSlice({
     },
     [createBlog.fulfilled]: (state, action) => {
       state.loading = false
-      state.blogs = [action.payload]
     },
     [createBlog.rejected]: (state, action) => {
       state.loading = false
@@ -139,7 +138,7 @@ const blogSlice = createSlice({
     },
     [getBlogByUserId.fulfilled]: (state, action) => {
       state.loading = false
-      state.blogs = action.payload
+      state.userBlog = action.payload
     },
     [getBlogByUserId.rejected]: (state, action) => {
       state.loading = false

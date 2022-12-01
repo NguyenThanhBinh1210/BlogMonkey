@@ -1,31 +1,46 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import Button from '../components/Button'
 import FeatureItem from '../components/FeatureItem'
 import useOnTop from '../hooks/useOnTop'
 import BaseLayout from '../layouts/BaseLayout'
-import { getUser } from '../redux/feature/authSlice'
-import { getBlogByUserId } from '../redux/feature/blogSlice'
 
 const Profile = () => {
   const { scrollToTop } = useOnTop()
+  const getLocal = JSON.parse(localStorage.getItem('profile'))
+  const user = getLocal?.user
   useEffect(() => {
     scrollToTop()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const { id } = useParams()
-  const dispatch = useDispatch()
-  const { user } = useSelector((state) => ({ ...state.auth }))
-  const { blogs, loading } = useSelector((state) => ({ ...state.blog }))
+  const token = getLocal?.token
+  const { loading } = useSelector((state) => ({ ...state.blog }))
+  const [userIdBlog, setUserIdBlog] = useState(null)
+
+  const getUserBlogs = async () => {
+    const response = await fetch(`https://api-blogv1.onrender.com/blogs/userblog/${id}`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    const data = await response.json()
+    setUserIdBlog(data)
+  }
+  const deleteBlog = async (idBlog) => {
+    const response = await fetch(`https://api-blogv1.onrender.com/blogs/delete/${idBlog}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    await response.json()
+    const newData = userIdBlog.filter((item) => item._id !== idBlog)
+    toast.info('Xoá thành công!')
+    setUserIdBlog(newData)
+  }
   useEffect(() => {
-    if (id) {
-      dispatch(getUser(id))
-      dispatch(getBlogByUserId(id))
-    } else {
-    }
-  }, [dispatch, id])
-  if (!user && !blogs) return null
+    getUserBlogs()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <BaseLayout>
@@ -38,7 +53,7 @@ const Profile = () => {
             <strong>Email:</strong> {user?.email}{' '}
           </div>
           <div>
-            {blogs.length > 0 && (
+            {userIdBlog?.length > 0 && (
               <div className='mt-5'>
                 <Link to='/create'>
                   <Button>Create</Button>
@@ -57,10 +72,13 @@ const Profile = () => {
             </div>
           ) : (
             <>
-              {blogs.length > 0 ? (
-                blogs.map((item) => (
-                  <div className='mb-10 mobile:flex mobile:justify-center' key={item?._id}>
-                    <FeatureItem profile isEdit item={item}></FeatureItem>
+              {userIdBlog?.length > 0 ? (
+                userIdBlog?.map((item) => (
+                  <div
+                    className='mb-10 mobile:mb-0 flex flex-col justify-between mobile:flex-row h-[377px] mobile:h-max mobile:flex mobile:justify-center'
+                    key={item?._id}
+                  >
+                    <FeatureItem profile isEdit item={item} deleteBlog={deleteBlog}></FeatureItem>
                   </div>
                 ))
               ) : (

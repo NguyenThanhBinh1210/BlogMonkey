@@ -13,9 +13,11 @@ import moment from 'moment'
 import useOnTop from '../hooks/useOnTop'
 
 const Home = () => {
-  const { blogs, loading } = useGetBlog()
-  const [sort, setSort] = useState()
   const checkLogin = JSON.parse(localStorage.getItem('profile'))?.user?.name
+
+  const { blogs, loading } = useGetBlog()
+
+  const [sort, setSort] = useState()
   const { scrollToTop } = useOnTop()
   useEffect(() => {
     scrollToTop()
@@ -57,7 +59,7 @@ const Home = () => {
             <div className='max-w-[445px]'>
               <h1 className='text-[48px] font-[700] text-white font-montserrat mb-[28px]'>Monkey Blogging</h1>
               <p className='font-md text-[14px] text-white max-w-[421px] leading-7 font-montserrat not-italic mb-[48px]'>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor inc = = unt ut labore et
                 dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.
               </p>
 

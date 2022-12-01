@@ -21,7 +21,8 @@ const Header = () => {
   const filterDebounce = useDebounce(searchR, 500)
   const handleSearch = (e) => {
     e.preventDefault()
-    navigate(`/blog?searchQuery=${filterDebounce}`)
+    setSearch('')
+    navigate(`/blog?searchQuery=${searchR}`)
   }
   const handleLogout = () => {
     dispatch(setLogout())
@@ -33,7 +34,7 @@ const Header = () => {
     if (pathname === '/blog' && !search) {
       dispatch(searchBlog(filterDebounce))
     }
-  }, [filterDebounce, dispatch, pathname, navigate, search])
+  }, [filterDebounce, dispatch, pathname, search])
   // if (!checkLogin) return null
   return (
     <div className='flex p-6 mobile:py-1 mobile:px-4 justify-between '>
@@ -77,11 +78,10 @@ const Header = () => {
           <>
             <h1 className='hover-info relative mobile:hidden'>
               Hi, I'm <strong className='cursor-pointer'>{checkLogin}</strong>
-              <div className='info-grid grid grid-row-3 p-3'>
+              <div className='info-grid  w-[200px] grid grid-row-3 p-3'>
                 <Link to={`/user/${getLocal?.user._id}`} className='m-auto border-b cursor-pointer'>
                   My account
                 </Link>
-                {/* <div className='m-auto border-b cursor-pointer'>Dashboard</div> */}
                 <div className='m-auto border-b cursor-pointer text-[#2EBAC1] font-semibold' onClick={handleLogout}>
                   Log Out
                 </div>
@@ -89,7 +89,7 @@ const Header = () => {
             </h1>
             <div className='w-10 h-10 hover-info hidden mobile:block'>
               <img src={User} alt='' />
-              <div className='info-grid grid grid-row-3 p-3'>
+              <div className='mobile:mt-3 mobile:w-full info-grid grid grid-row-3 p-3'>
                 <div className='text-center'>
                   <strong className='cursor-pointer'>{checkLogin}</strong>
                 </div>
