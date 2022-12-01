@@ -17,6 +17,7 @@ const Header = () => {
   const navigate = useNavigate()
   const { search } = useLocation()
   const getLocal = JSON.parse(localStorage.getItem('profile'))
+  const isAdmin = getLocal?.user?.admin
   const checkLogin = getLocal?.user?.name
   const filterDebounce = useDebounce(searchR, 500)
   const handleSearch = (e) => {
@@ -79,9 +80,15 @@ const Header = () => {
             <h1 className='hover-info relative mobile:hidden'>
               Hi, I'm <strong className='cursor-pointer'>{checkLogin}</strong>
               <div className='info-grid  w-[200px] grid grid-row-3 p-3'>
-                <Link to={`/user/${getLocal?.user._id}`} className='m-auto border-b cursor-pointer'>
-                  My account
-                </Link>
+                {isAdmin ? (
+                  <Link to={`/admin`} className='m-auto border-b cursor-pointer'>
+                    Dashboard
+                  </Link>
+                ) : (
+                  <Link to={`/user/${getLocal?.user._id}`} className='m-auto border-b cursor-pointer'>
+                    My account
+                  </Link>
+                )}
                 <div className='m-auto border-b cursor-pointer text-[#2EBAC1] font-semibold' onClick={handleLogout}>
                   Log Out
                 </div>
@@ -93,9 +100,16 @@ const Header = () => {
                 <div className='text-center'>
                   <strong className='cursor-pointer'>{checkLogin}</strong>
                 </div>
-                <Link to={`/user/${getLocal?.user._id}`} className='m-auto  border-b cursor-pointer'>
-                  My account
-                </Link>
+                {isAdmin ? (
+                  <Link to={`/admin`} className='m-auto border-b cursor-pointer'>
+                    Dashboard
+                  </Link>
+                ) : (
+                  <Link to={`/user/${getLocal?.user._id}`} className='m-auto  border-b cursor-pointer'>
+                    My account
+                  </Link>
+                )}
+
                 {/* <div className='m-auto border-b cursor-pointer'>Dashboard</div> */}
                 <div className='m-auto border-b cursor-pointer text-[#2EBAC1] font-semibold' onClick={handleLogout}>
                   Log Out

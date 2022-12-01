@@ -42,7 +42,10 @@ const Blog = () => {
           <div className='mt-10 gap-6 mobile:gap-0 grid grid-cols-4 mobile:grid-cols-2'>
             {blogs.length > 0 ? (
               blogs.map((item) => (
-                <div className='w-[267px] shadow-bold mb-2 mobile:w-full justify-center mobile:flex' key={item?._id}>
+                <div
+                  className='w-[267px] mobile:h-[280px] shadow-bold mb-2 mobile:w-full justify-center mobile:flex'
+                  key={item?._id}
+                >
                   <FeatureItem item={item}></FeatureItem>
                 </div>
               ))

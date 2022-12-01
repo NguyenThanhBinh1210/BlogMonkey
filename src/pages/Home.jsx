@@ -127,7 +127,7 @@ const Home = () => {
                         </div>
 
                         <div className=' w-[370px] mobile:w-full flex-col flex mobile:items-center justify-center'>
-                          <div className=' mobile:text-[12px] mobile:mx-auto bg-[#FFFFFF] w-max h-[26px] rounded-[10px] text-[#6B6B6B] font-[600] leading-4 text-[14px] px-[10px] py-[4px]'>
+                          <div className=' mobile:text-[12px] mobile:mx-auto max-w-[150px] line-clamp-1 bg-[#FFFFFF] w-max h-[26px] rounded-[10px] text-[#6B6B6B] font-[600] leading-4 text-[14px] px-[10px] py-[4px]'>
                             {item?.tags}
                           </div>
                           <div className='leading-[24px] mobile:text-[14px] text-[18px] font-[600] font-montserrat mt-[10px] line-clamp'>
@@ -149,7 +149,7 @@ const Home = () => {
             {blogs &&
               blogs.slice(0, 4).map((item) => (
                 <div
-                  className='w-[267px] mb-2 mobile:mb-6 mobile:w-[200px] mobile:flex mobile:justify-center '
+                  className='w-[267px] mobile:mb-12 mb-2 mobile:w-[200px] mobile:flex mobile:justify-center '
                   key={item?._id}
                 >
                   <FeatureItem item={item}></FeatureItem>

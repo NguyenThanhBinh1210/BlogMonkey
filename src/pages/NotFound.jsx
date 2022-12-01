@@ -1,6 +1,5 @@
 import React from 'react'
-// import NotFound from '../assets/images/not-fpound'
-import NotFoundImg from '../assets/images/not-fpound.webp'
+
 const NotFound = () => {
   return (
     <div className='w-full text-white bg-[#23BB86] h-[100vh] flex flex-col justify-center items-center'>

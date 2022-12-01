@@ -159,3 +159,10 @@ body::-webkit-scrollbar-thumb {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 20px;
+}

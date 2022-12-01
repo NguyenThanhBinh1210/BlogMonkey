@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Gallery from '../assets/icons/gallery.png'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
 import Button from '../components/Button'
 import FileBase from 'react-file-base64'
 import { useDispatch, useSelector } from 'react-redux'
@@ -45,7 +43,7 @@ const Create = () => {
   }
   const { register, handleSubmit } = useForm({})
 
-  const onSubmit = (data) => {
+  const onSubmit = () => {
     const { title, description, tags, main } = formData
     if (selectImages.length === 0) setErrorFile(true)
     if (title === '' || description === '' || tags === '' || main === '') setError(true)

@@ -23,6 +23,7 @@ function App() {
         <Route path='/register' element={<Register />} />
         <Route path='/blog/:id' element={<Details />} />
         <Route path='/user/:id' element={<Profile />} />
+        <Route path='/admin' element={<Profile />} />
         <Route path='/create' element={<Create />} />
         <Route path='/create/:id' element={<Create />} />
         <Route path='*' element={<NotFound />} />

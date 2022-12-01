@@ -20,7 +20,6 @@ export const editBlog = createAsyncThunk(
     try {
       const response = await api.editBlog(updatedBlogData, id)
       navigate(`/user/${updatedBlogData.userId}`)
-
       toast.success('Chỉnh sửa thành công!')
       return response.data
     } catch (err) {

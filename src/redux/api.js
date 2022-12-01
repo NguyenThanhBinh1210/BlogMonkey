@@ -3,12 +3,12 @@ const user = JSON.parse(localStorage.getItem('profile'))
 const token = user?.token
 
 const API = axios.create({
-  baseURL: 'https://api-blogv1.onrender.com/',
+  baseURL: 'http://localhost:5000/',
   withCredentials: false,
   headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`
+    // Accept: 'application/json',
+    // 'Content-Type': 'application/json',
+    token: `Bearer ${token}`
   }
 })
 export const signIn = (formData) => API.post('/users/signin', formData)

@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react'
 import BaseLayout from '../layouts/BaseLayout'
-// import Pic11 from '../assets/images/pic11.png'
 import Man from '../assets/images/man.png'
-
 import FeatureItem from '../components/FeatureItem'
 import DotGray from '../assets/icons/Ellipse11.png'
 import Eie from '../assets/icons/Filled.png'
@@ -93,7 +91,11 @@ function Details() {
                     fruit fruit. Romantic fall-off-the-bone butternut chuck rice burgers.
                   </p>
                   <div className='my-[15px] w-[648px] h-[466px] rounded-[2%] overflow-hidden mobile:w-full mobile:h-[300px] '>
-                    {blog.imageFile &&
+                    {blog.imageFile?.length > 1 &&
+                      blog.imageFile
+                        .slice(1, 2)
+                        .map((item, index) => <img src={item} key={index} alt='' className='w-full h-full ' />)}
+                    {blog.imageFile?.length === 1 &&
                       blog.imageFile
                         .slice(0, 1)
                         .map((item, index) => <img src={item} key={index} alt='' className='w-full h-full ' />)}

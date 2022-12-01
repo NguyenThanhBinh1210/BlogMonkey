@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Button from '../components/Button'
@@ -9,37 +8,52 @@ import BaseLayout from '../layouts/BaseLayout'
 
 const Profile = () => {
   const { scrollToTop } = useOnTop()
+  const [adminBlog, setAdminBlog] = useState([])
+  const [userIdBlog, setUserIdBlog] = useState(null)
   const getLocal = JSON.parse(localStorage.getItem('profile'))
   const user = getLocal?.user
+  const isAdmin = getLocal.user.admin
   useEffect(() => {
     scrollToTop()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   const { id } = useParams()
   const token = getLocal?.token
-  const { loading } = useSelector((state) => ({ ...state.blog }))
-  const [userIdBlog, setUserIdBlog] = useState(null)
 
   const getUserBlogs = async () => {
-    const response = await fetch(`https://api-blogv1.onrender.com/blogs/userblog/${id}`, {
+    const response = await fetch(`http://localhost:5000/blogs/userblog/${id}`, {
       method: 'GET',
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { token: `Bearer ${token}` }
     })
     const data = await response.json()
     setUserIdBlog(data)
   }
+  const getAdminBlogs = async () => {
+    const response = await fetch(`http://localhost:5000/blogs/`, {
+      method: 'GET',
+      headers: { token: `Bearer ${token}` }
+    })
+    const data = await response.json()
+    setAdminBlog(data)
+  }
   const deleteBlog = async (idBlog) => {
-    const response = await fetch(`https://api-blogv1.onrender.com/blogs/delete/${idBlog}`, {
+    const response = await fetch(`http://localhost:5000/blogs/delete/${idBlog}`, {
       method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { token: `Bearer ${token}` }
     })
     await response.json()
     const newData = userIdBlog.filter((item) => item._id !== idBlog)
+    const newDataAdmin = adminBlog.filter((item) => item._id !== idBlog)
     toast.info('Xoá thành công!')
     setUserIdBlog(newData)
+    setAdminBlog(newDataAdmin)
   }
   useEffect(() => {
     getUserBlogs()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    getAdminBlogs()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -62,36 +76,58 @@ const Profile = () => {
             )}
           </div>
         </div>
-        <div className=' w-[70%] mobile:w-full grid grid-cols-2'>
-          {loading ? (
-            <div className='flex items-center mt-20 justify-center'>
-              <div className='lds-ripple mx-auto'>
-                <div></div>
-                <div></div>
+        {isAdmin && (
+          <div className=' w-[70%] mobile:w-full grid grid-cols-2'>
+            {adminBlog.length > 0 ? (
+              adminBlog?.map((item) => (
+                <div
+                  className='mb-10 mobile:mb-0 flex flex-col justify-between mobile:flex-row h-[377px] mobile:h-max mobile:flex mobile:justify-center'
+                  key={item?._id}
+                >
+                  <FeatureItem profile isEdit item={item} deleteBlog={deleteBlog}></FeatureItem>
+                </div>
+              ))
+            ) : (
+              <div className='flex items-center mt-20 justify-center'>
+                <div className='lds-ripple mx-auto'>
+                  <div></div>
+                  <div></div>
+                </div>
               </div>
-            </div>
-          ) : (
-            <>
-              {userIdBlog?.length > 0 ? (
-                userIdBlog?.map((item) => (
+            )}
+          </div>
+        )}
+        {!isAdmin && (
+          <div className=' w-[70%] mobile:w-full grid grid-cols-2'>
+            {userIdBlog && userIdBlog.length === 0 && (
+              <div>
+                You have not created any posts yet!{' '}
+                <span className='text-[#00B4AA]'>
+                  <Link to='/create'>Create now?</Link>
+                </span>{' '}
+              </div>
+            )}
+            {!userIdBlog ? (
+              <div className='flex items-center mt-20 justify-center'>
+                <div className='lds-ripple mx-auto'>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+            ) : (
+              <>
+                {userIdBlog?.map((item) => (
                   <div
                     className='mb-10 mobile:mb-0 flex flex-col justify-between mobile:flex-row h-[377px] mobile:h-max mobile:flex mobile:justify-center'
                     key={item?._id}
                   >
                     <FeatureItem profile isEdit item={item} deleteBlog={deleteBlog}></FeatureItem>
                   </div>
-                ))
-              ) : (
-                <div>
-                  You have not created any posts yet!{' '}
-                  <span className='text-[#00B4AA]'>
-                    <Link to='/create'>Create now?</Link>
-                  </span>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+                ))}
+              </>
+            )}
+          </div>
+        )}
       </div>
     </BaseLayout>
   )
