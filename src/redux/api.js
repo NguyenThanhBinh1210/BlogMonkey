@@ -3,7 +3,7 @@ const user = JSON.parse(localStorage.getItem('profile'))
 const token = user?.token
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/',
+  baseURL: 'https://api-blogv1.onrender.com/',
   withCredentials: false,
   headers: {
     // Accept: 'application/json',

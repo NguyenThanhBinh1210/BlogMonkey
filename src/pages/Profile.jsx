@@ -22,7 +22,7 @@ const Profile = () => {
   const token = getLocal?.token
 
   const getUserBlogs = async () => {
-    const response = await fetch(`http://localhost:5000/blogs/userblog/${id}`, {
+    const response = await fetch(`https://api-blogv1.onrender.com/blogs/userblog/${id}`, {
       method: 'GET',
       headers: { token: `Bearer ${token}` }
     })
@@ -30,7 +30,7 @@ const Profile = () => {
     setUserIdBlog(data)
   }
   const getAdminBlogs = async () => {
-    const response = await fetch(`http://localhost:5000/blogs/`, {
+    const response = await fetch(`https://api-blogv1.onrender.com/blogs/`, {
       method: 'GET',
       headers: { token: `Bearer ${token}` }
     })
@@ -38,7 +38,7 @@ const Profile = () => {
     setAdminBlog(data)
   }
   const deleteBlog = async (idBlog) => {
-    const response = await fetch(`http://localhost:5000/blogs/delete/${idBlog}`, {
+    const response = await fetch(`https://api-blogv1.onrender.com/blogs/delete/${idBlog}`, {
       method: 'DELETE',
       headers: { token: `Bearer ${token}` }
     })
